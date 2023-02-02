@@ -14,8 +14,8 @@ exports.get_all_users = (req,res,next) => {
         "counts" :docs.length,
         "page"   :page,
         "result" : docs,
-        previous_page:`http://localhost:6700/user?page=${page-1}&data_per_page=${limitValue}`,
-        next_page:`http://localhost:6700/user?page=${parseInt(page)+1}&data_per_page=${limitValue}`
+        previous_page : process.env.BLOG_URL+`/user?page=${page-1}&data_per_page=${limitValue}`,
+        next_page     : process.env.BLOG_URL+`/user?page=${parseInt(page)+1}&data_per_page=${limitValue}`
     });
    })
    .catch(error => {
@@ -41,7 +41,7 @@ exports.insert_new_user = (req,res,next) => {
                     last_name  : req.body.last_name,
                     email      : req.body.email,
                     password   : req.body.password,
-                    userImage  : "http://localhost:6700/public/"+req.file.filename
+                    userImage  : process.env.BLOG_URL+"/public/"+req.file.filename
                 });
                 newUser.save()
                 .then(result => {
@@ -91,7 +91,7 @@ exports.modify_user_info = (req,res,next) => {
                     last_name  : req.body.last_name,
                     email      : req.body.email,
                     password   : req.body.password,
-                    userImage  : "http://localhost:6700/public/"+req.file.filename
+                    userImage  : process.env.BLOG_URL+"/public/"+req.file.filename
           }
         })
          .exec()
@@ -100,7 +100,7 @@ exports.modify_user_info = (req,res,next) => {
               message:"User Info Is updated successfully",
               request:{
                 type:"GET",
-                url:"http://localhost:6700/user/"+req.params.updateId
+                url:proccess.env.BLOG_URL+"/user/"+req.params.updateId
               }
            });
          })

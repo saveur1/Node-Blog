@@ -12,9 +12,10 @@ exports.get_all_blogs = (req,res,next) => {
             user  :doc.user,
             createdAt  :doc.createdAt,
             updatedAt  :doc.updatedAt,
-            request    : {
+            blogImage  :doc.blogImage,
+            request    : { 
                type:"GET",
-               url:"http://localhost:6700/"+doc._id
+               url:process.env.BLOG_URL+"/"+doc._id
             }
          }
       });
@@ -38,9 +39,10 @@ exports.insert_new_post = (req,res,next) => {
    .then(doc => {
       if(doc) {
          const newBlog = new Blog({
-             title : req.body.title,
-             body  : req.body.body,
-             user  : req.body.user
+             title     : req.body.title,
+             body      : req.body.body,
+             user      : req.body.user,
+             blogImage : process.env.BLOG_URL+"/public/"+req.file.filename
          });
       newBlog.save()
              .then(doc => {
@@ -51,9 +53,10 @@ exports.insert_new_post = (req,res,next) => {
                      user  :doc.user,
                      createdAt  :doc.createdAt,
                      updatedAt  :doc.updatedAt,
+                     blogImage  :doc.blogImage,
                      request    : {
                         type:"GET",
-                        url:"http://localhost:6700/"+doc._id
+                        url:process.env.BLOG_URL+"/"+doc._id
                      }
                    }
                res.status(200).json({
@@ -96,9 +99,10 @@ exports.get_single_blog = (req,res,next) => {
                user  :doc.user,
                createdAt  :doc.createdAt,
                updatedAt  :doc.updatedAt,
+               blogImage  :doc.blogImage,
                request    : {
                   type:"GET",
-                  url:"http://localhost:6700"
+                  url:process.env.BLOG_URL
                }
              });
          }
@@ -126,7 +130,7 @@ exports.delete_blog = (req,res,next) => {
              message:"Post has been deleted successfully",
              request: {
                type:"GET",
-               url :"http://localhost:6700"
+               url :process.env.BLOG_URL
              }
          });
        })

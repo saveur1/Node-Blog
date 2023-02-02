@@ -15,7 +15,7 @@ const blogSchema = mongoose.Schema(
             required:true,
             ref:"User"
         },
-        blogImages:{
+        blogImage:{
             type:String,
             required:false
         }
