@@ -38,37 +38,54 @@ exports.insert_new_post = (req,res,next) => {
    .exec()
    .then(doc => {
       if(doc) {
-         const newBlog = new Blog({
-             title     : req.body.title,
-             body      : req.body.body,
-             user      : req.body.user,
-             blogImage : process.env.BLOG_URL+"/public/"+req.file.filename
-         });
-      newBlog.save()
-             .then(doc => {
-               let created_blog= {
-                     _id   :doc._id,
-                     title :doc.title,
-                     body  : doc.body,
-                     user  :doc.user,
-                     createdAt  :doc.createdAt,
-                     updatedAt  :doc.updatedAt,
-                     blogImage  :doc.blogImage,
-                     request    : {
-                        type:"GET",
-                        url:process.env.BLOG_URL+"/"+doc._id
-                     }
-                   }
-               res.status(200).json({
-                  message:"Created New Post successfully",
-                  created_blog:created_blog
-               });
+         Blog.find({title:req.body.title})
+             .then(docs => {
+               if(docs.length>0)
+               {
+                  return res.status(422).json({
+                      message:"The blog You want to post has already been posted"
+                  });
+               }
+               else
+               {
+                  const newBlog = new Blog({
+                     title     : req.body.title,
+                     body      : req.body.body,
+                     user      : req.body.user,
+                     blogImage : process.env.BLOG_URL+"/public/"+req.file.filename
+                 });
+                 newBlog.save()
+                     .then(doc => {
+                       let created_blog= {
+                             _id   :doc._id,
+                             title :doc.title,
+                             body  : doc.body,
+                             user  :doc.user,
+                             createdAt  :doc.createdAt,
+                             updatedAt  :doc.updatedAt,
+                             blogImage  :doc.blogImage,
+                             request    : {
+                                type:"GET",
+                                url:process.env.BLOG_URL+"/"+doc._id
+                             }
+                           }
+                       res.status(200).json({
+                          message:"Created New Post successfully",
+                          created_blog:created_blog
+                       });
+                     })
+                     .catch(error => {
+                       console.log(error);
+                       res.status(500).json({
+                          error:error
+                       });
+                     });
+               }
              })
              .catch(error => {
-               console.log(error);
-               res.status(500).json({
-                  error:error
-               });
+                 return res.status(500).json({
+                     error:error
+                 });
              });
       }
       else {

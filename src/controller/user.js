@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.get_all_users = (req,res,next) => {
     const limitValue = req.query.limit || 5;
@@ -35,27 +37,36 @@ exports.insert_new_user = (req,res,next) => {
                 });
             }
             else {
-                const newUser = new User({
-                    _id        : new mongoose.Types.ObjectId(),
-                    first_name : req.body.first_name,
-                    last_name  : req.body.last_name,
-                    email      : req.body.email,
-                    password   : req.body.password,
-                    userImage  : process.env.BLOG_URL+"/public/"+req.file.filename
-                });
-                newUser.save()
-                .then(result => {
-                   res.status(200).json({
-                       "message" : "User inserted successfully",
-                       "insertedUser" : newUser
-                   });
+                bcrypt.hash(req.body.password,10,(error,hash) => {
+                    if(error) {
+                        return res.status(500).json({
+                              error:error
+                        });
+                    }
+                    else {
+                        const newUser = new User({
+                            _id        : new mongoose.Types.ObjectId(),
+                            first_name : req.body.first_name,
+                            last_name  : req.body.last_name,
+                            email      : req.body.email,
+                            password   : hash,
+                            userImage  : process.env.BLOG_URL+"/public/"+req.file.filename
+                        });
+                        newUser.save()
+                        .then(result => {
+                           res.status(200).json({
+                               "message" : "User inserted successfully",
+                               "insertedUser" : newUser
+                           });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            res.status(500).json({
+                               error:error
+                            });
+                        });
+                    }
                 })
-                .catch(error => {
-                    console.log(error);
-                    res.status(500).json({
-                       error:error
-                    });
-                });
             }
         })
         .catch(error => {
@@ -126,4 +137,48 @@ exports.delete_user = (req,res,next) => {
             error:error
            });
         });
+}
+
+exports.check_login_credentials = (req,res,next) => {
+    User.findOne({email:req.body.email})
+        .exec()
+        .then(doc => {
+            if(doc)
+            {
+                bcrypt.compare(req.body.password,doc.password,(error,same)=> {
+                    if(error) {
+                        return res.status(500).json({
+                           error:error
+                        });
+                    }
+                    if(same) {
+                        const token = jwt.sign({
+                            _id:doc._id,
+                            email:doc.email
+                        },
+                        process.env.SECRET_KEY,
+                        {
+                           expiresIn:"1h"
+                        })
+                        return res.status(200).json({
+                             message:"Authantication has passed",
+                             token:token
+                        });
+                    }
+                    return res.status(401).json({
+                       message:"Authantication failed1"
+                    });
+                })
+            }
+            else {
+                return res.status(401).json({
+                    message:"Authentication failed2"
+                })
+            }
+        })
+        .catch(error => {
+            res.status(500).json({
+               error:error
+            });
+        })
 }

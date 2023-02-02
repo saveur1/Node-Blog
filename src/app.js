@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const fs = require("fs");
 
 const mainRouter = require("./routes/blog");
 const User = require("./routes/user");
@@ -53,6 +54,5 @@ app.use((error,req,res,next) =>{
         error:error.message
     });
 });
-
 
 module.exports = app;
