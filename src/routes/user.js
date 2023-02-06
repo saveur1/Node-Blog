@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 });
 const image = multer({storage:storage});
 
-router.get("/",controller.get_all_users);
+router.get("/",CheckAuth,controller.get_all_users);
 
 router.post("/signup", image.single("userImage"), controller.insert_new_user);
 

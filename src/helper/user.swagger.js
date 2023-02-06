@@ -1,46 +1,4 @@
 exports.UserDocs={
-        "/user" : {
-        get:{
-            tags:["User"],
-            description:"List of all users",
-            parameters: [
-                {
-                    in:"query",
-                    name:"page",
-                    type:Number,
-                    required:false,
-                    description:"Enter Page Number"
-                },
-                {
-                in:"query",
-                name:"data_per_page",
-                type:Number,
-                required:false,
-                description:"Enter Data To be on One page"
-                }
-            ],
-            responses: {
-                200: {
-                description:"OK",
-                content: {
-                    "applicatin/json": {
-                        schema: {
-                            type:"object",
-                            example: {
-                                status:"success",
-                                count:0,
-                                user:[
-
-                                ]
-                            }                                    
-                        }
-                    }
-
-                }
-                }
-            }
-        }
-    },
     "/user/signup": {
         post:{
             tags:["User"],
@@ -118,12 +76,12 @@ exports.UserDocs={
                                     type:"String",
                                     description:"Type Your Login Email address",
                                     title:"your Email address",
-                                    example:"emailaddress@gmail.com"
+                                    example:"bikorimana@gmail.com"
                                 },
                                 password:{
                                     type:"String",
                                     description:"Type Your given Password",
-                                    example:"*********"
+                                    example:"saveur"
                                 }
                             }
                         }
@@ -158,6 +116,53 @@ exports.UserDocs={
             }
         }
     },
+    "/user" : {
+        get:{
+            tags:["User"],
+            description:"List of all users",
+            parameters: [
+                {
+                    in:"query",
+                    name:"page",
+                    type:Number,
+                    required:false,
+                    description:"Enter Page Number"
+                },
+                {
+                    in:"query",
+                    name:"data_per_page",
+                    type:Number,
+                    required:false,
+                    description:"Enter Data To be on One page"
+                }
+            ],
+            security:[
+                {
+                    token:[]
+                }
+            ],
+            responses: {
+                200: {
+                description:"OK",
+                content: {
+                    "applicatin/json": {
+                        schema: {
+                            type:"object",
+                            example: {
+                                status:"success",
+                                count:0,
+                                user:[
+
+                                ]
+                            }                                    
+                        }
+                    }
+
+                }
+                }
+            }
+        }
+    },
     "/user/{user_id}":{
         get:{
             tags:["User"],
@@ -171,6 +176,11 @@ exports.UserDocs={
               required:true,
               example:"63da9eb9db47ce0c7f205d6f"
             }],
+            security:[
+                {
+                    token:[]
+                }
+            ],
             responses:{
                 200:{
                     content:{
@@ -191,33 +201,6 @@ exports.UserDocs={
             }
         }
     },
-    "/user/{delete_id}":{
-        delete:{
-            tags:["User"],
-            description:"Delete single user",
-            parameters:[{
-                in:"path",
-                name:"delete_id",
-                type:"String",
-                description:"Delete single user",
-                required:true,
-                example:"63da9eb9db47ceic7f205d6o"
-            }],
-            responses:{
-                200:{
-                    description:"Delete user example response",
-                    content:{
-                        "application/json":{
-                            type:"object",
-                            example:{
-                               message: "User deleted successfully"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
     "/user/{update_id}" : {
         put:{
             tags:["User"],
@@ -228,6 +211,11 @@ exports.UserDocs={
                 name:"update_id",
                 description:"Enter Id for updatation"
             }],
+            security:[
+                {
+                    token:[]
+                }
+            ],
             requestBody:{
                 content:{
                     "multipart/form-data" : {
@@ -286,6 +274,38 @@ exports.UserDocs={
                                     type:"GET",
                                     url:process.env.BLOG_URL+"/user/63d90a40ef529fd533f8edf4"
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/user/{delete_id}":{
+        delete:{
+            tags:["User"],
+            description:"Delete single user",
+            parameters:[{
+                in:"path",
+                name:"delete_id",
+                type:"String",
+                description:"Delete single user",
+                required:true,
+                example:"63da9eb9db47ceic7f205d6o"
+            }],
+            security:[
+                {
+                    token:[]
+                }
+            ],
+            responses:{
+                200:{
+                    description:"Delete user example response",
+                    content:{
+                        "application/json":{
+                            type:"object",
+                            example:{
+                               message: "User deleted successfully"
                             }
                         }
                     }
