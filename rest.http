@@ -1,0 +1,33 @@
+
+
+
+GET http://localhost:6700/user
+Content-Type: application/json
+
+###
+
+POST http://localhost:6700/user/login
+Content-Type: application/json
+
+{
+   "email":"bikorimana@gmail.com",
+   "password":"saveur"
+}
+
+###
+
+GET http://localhost:6700/user
+Content-Type: application/json
+token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Q5MGE0MGVmNTI5ZmQ1MzNmOGVkZjQiLCJlbWFpbCI6ImJpa29yaW1hbmFAZ21haWwuY29tIiwiaWF0IjoxNjc1NjA3NjQxLCJleHAiOjE2NzU2MTEyNDF9.svweeUO0yD-N09PK60mT0ZhTPuBsnYjc031XzLWqFKE
+
+###
+
+DELETE  http://localhost:6700/user/63da8cce16a8a95870812dbd
+Content-Type: application/json
+token : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Q5MGE0MGVmNTI5ZmQ1MzNmOGVkZjQiLCJlbWFpbCI6ImJpa29yaW1hbmFAZ21haWwuY29tIiwiaWF0IjoxNjc1NjA0OTE4LCJleHAiOjE2NzU2MDg1MTh9.lSaxAyR5vck1rhJJws0FcPQV3DnA_N_m5XFzrpWVETk
+
+###
+
+GET  http://localhost:6700/blogs
+Content-Type: application/json
+token:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2Q5MGE0MGVmNTI5ZmQ1MzNmOGVkZjQiLCJlbWFpbCI6ImJpa29yaW1hbmFAZ21haWwuY29tIiwiaWF0IjoxNjc1NjA0OTE4LCJleHAiOjE2NzU2MDg1MTh9.lSaxAyR5vck1rhJJws0FcPQV3DnA_N_m5XFzrpWVETk
