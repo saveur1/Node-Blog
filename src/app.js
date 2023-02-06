@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const fs = require("fs");
+const swaggerDocumantation = require("./helper/documantation");
 
 const mainRouter = require("./routes/blog");
 const User = require("./routes/user");
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({"extended":false}));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(cors({origin:"*"}));
+
 
 
 //connecting to database
@@ -33,13 +35,14 @@ mongoose.connect(process.env.DB_URL,{
 });
 
 //routes
+swaggerDocumantation(app);
 app.use("/public",express.static("./public"));
 app.use("/user",User);
-app.use("/",mainRouter);
+app.use("/blogs",mainRouter);
 
 
 //404 error handling after routers
-app.use((req,res,next) => {
+app.use("/**",(req,res,next) => {
    const error = new Error("Page Not Found");
    error.status = 404;
    next(error);

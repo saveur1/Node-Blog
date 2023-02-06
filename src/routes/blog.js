@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
+const CheckAuth = require("../middleware/Authantication");
 const controller = require("../controller/blog");
 
 const router = express.Router();
@@ -28,11 +29,13 @@ const uploads = multer({storage:storage,fileFilter:fileFilter});
 
  router.get("/",controller.get_all_blogs);
 
- router.post("/",uploads.single("blogImage"),controller.insert_new_post);
+ router.post("/create",uploads.single("blogImage"),controller.insert_new_post);
+
+ router.delete("/delete/:deleteId", controller.delete_blog);
 
  router.get("/:blogId", controller.get_single_blog);
 
- router.delete("/:deleteId", controller.delete_blog);
+ router.put("/update/:edit_id",uploads.single("blogImage"),controller.edit_blog_data);
 
 
 

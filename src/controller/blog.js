@@ -140,6 +140,11 @@ exports.get_single_blog = (req,res,next) => {
 }
 
 exports.delete_blog = (req,res,next) => {
+      if(req.params.deleteId.length<12) {
+         return res.status(422).json({
+             message:"Invalid id format, id should be greater than 12 characters"
+         })
+      }
       Blog.deleteOne({_id:req.params.deleteId})
        .exec()
        .then(result => {
@@ -156,5 +161,65 @@ exports.delete_blog = (req,res,next) => {
          res.status(500).json({
             error:error
          });
+       });
+}
+
+exports.edit_blog_data = (req,res,next) =>{
+   let edit_id=req.params.edit_id;
+   if(edit_id.length<24) {
+      return res.status(422).json({
+         message:"Invalid id format, id should be greater than 12 characters"
+      })
+   }
+   if(req.file==undefined) {
+      return res.status(422).json({
+         message:"Upload Blog image please"
+      })
+   };
+   User.findOne({user:req.body.user})
+        .exec()
+       .then(doc=>{
+         if(doc)
+         {
+            Blog.updateOne(
+               {
+                  _id:edit_id
+               },
+               {
+                  "$set": {
+                     title:req.body.title,
+                     body:req.body.body,
+                     user:req.body.user,
+                     blogImage:req.file.filename
+                  }
+               })
+               .exec()
+               .then(result =>{
+                  res.status(200).json({
+                     message:"Blog updated successfully",
+                     request:{
+                        type:"GET",
+                        url:process.env.BLOG_URL+"/blogs/"+edit_id
+                     }
+                  });
+               })
+               .catch(error =>{
+                  console.log(error);
+                  res.status(500).json({
+                     error:error
+                  });
+               });
+         }
+         else{
+            res.status(422).json({
+               message:"Entered user id is not found,try with different"
+            });
+         }
+       })
+       .catch(error =>{
+         console.log(error);
+           res.status(500).json({
+            error:error
+           });
        });
 }
